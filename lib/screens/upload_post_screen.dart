@@ -18,6 +18,15 @@ class UploadPostScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.upload),
+            ),
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
@@ -38,12 +47,9 @@ class UploadPostScreen extends StatelessWidget {
 
               // caption TextFormField
               TextFormField(
-                // cursorColor: Colors.black,
-                // style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: 'Caption',
                   hintStyle: TextStyle(color: Colors.grey[500]),
-                  // fillColor: Colors.white54,
                   filled: true,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   focusedBorder: OutlineInputBorder(

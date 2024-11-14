@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:social_media/components/post_tile.dart';
+import 'package:social_media/data/dummy_posts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,39 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<String> users = [];
-
-  Future<void> fetchUsers() async {
-    try {
-      String? currentUserEmail = FirebaseAuth.instance.currentUser!.email;
-
-      QuerySnapshot usersSnapshot =
-          await FirebaseFirestore.instance.collection('users').get();
-
-      List<DocumentSnapshot> usersDocs = usersSnapshot.docs;
-
-      for (var doc in usersDocs) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-        String userEmail = data['email'];
-
-        if (userEmail.trim() != currentUserEmail) {
-          users.add(userEmail);
-        }
-      }
-
-      setState(() {});
-    } catch (error) {
-      print(error);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchUsers();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,42 +82,13 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (ctx, index) {
-            return GestureDetector(
-              onTap: () {
-                context.go(
-                  '/chat_screen',
-                  extra: users[index],
-                );
-              },
-              child: Card(
-                color: Theme.of(context).cardTheme.color,
-                elevation: 20,
-                margin: const EdgeInsets.all(10),
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.grey[500],
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        users[index],
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+      body: ListView.builder(
+        itemCount: dummyPosts.length,
+        itemBuilder: (ctx, index) {
+          return PostTile(
+            post: dummyPosts[index],
+          );
+        },
       ),
     );
   }
