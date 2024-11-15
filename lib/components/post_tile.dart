@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:social_media/models/post.dart';
+import 'package:social_media/models/poster.dart';
 
 class PostTile extends StatelessWidget {
   const PostTile({
     super.key,
     required this.post,
+    required this.poster,
   });
 
   final Post post;
+  final Poster poster;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +22,17 @@ class PostTile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
+              GestureDetector(
+                onTap: () {
+                  context.push('/profile_screen', extra: poster);
+                },
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Image.asset(post.profileUrl),
                 ),
-                child: Image.asset(post.profileUrl),
               ),
               const SizedBox(width: 16),
               Text(post.name),

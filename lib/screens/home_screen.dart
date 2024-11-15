@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/components/post_tile.dart';
+import 'package:social_media/data/dummy_posters.dart';
 import 'package:social_media/data/dummy_posts.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -87,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (ctx, index) {
           return PostTile(
             post: dummyPosts[index],
+            poster: dummyPosters[index],
           );
         },
       ),
