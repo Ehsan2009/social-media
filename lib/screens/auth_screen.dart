@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:social_media/components/auth_image_picker.dart';
+import 'package:social_media/services/upload_image.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -16,6 +20,7 @@ class _AuthScreenState extends State<AuthScreen> {
   var enteredName = '';
   var enteredEmail = '';
   var enteredPassword = '';
+  File? _selectedImage;
   var isLogin = false;
   var isAuthenticating = false;
   var passwordController = TextEditingController();
@@ -50,15 +55,23 @@ class _AuthScreenState extends State<AuthScreen> {
           password: enteredPassword.trim(),
         );
 
+        final profileUrl =
+            await UploadImage().getUserProfileUrl(_selectedImage!, 'profiles');
+        final uid = FirebaseAuth.instance.currentUser!.uid;
+
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set(
-          {
-            'name': enteredName.trim(),
-            'email': enteredEmail.trim(),
-          },
-        );
+            .doc(uid)
+            .set({
+          'id': uid,
+          'name': enteredName,
+          'email': enteredEmail.trim(),
+          'profileUrl': profileUrl,
+          'postsCount': 0,
+          'followersCount': 0,
+          'followingCount': 0,
+          'posts': [],
+        });
       }
 
       context.go('/');
@@ -93,11 +106,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     size: 120,
                     color: Colors.grey[500],
                   ),
-                  // Image.asset(
-                  //   'assets/images/chat.png',
-                  //   width: 160,
-                  //   color: Colors.grey[700],
-                  // ),
 
                   const SizedBox(height: 24),
 
@@ -109,6 +117,17 @@ class _AuthScreenState extends State<AuthScreen> {
                       fontSize: 18,
                       color: Colors.grey[700],
                     ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // user image picker
+                  UserImagePicker(
+                    onPickImage: (pickedImage) {
+                      _selectedImage = pickedImage;
+                    },
+                    source: ImageSource.camera,
+                    boxRadius: 80,
                   ),
 
                   const SizedBox(height: 24),

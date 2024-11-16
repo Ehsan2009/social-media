@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:social_media/config/app_router.dart';
 import 'package:social_media/firebase_options.dart';
 import 'package:social_media/provider/theme_provider.dart';
+import 'package:social_media/utils/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 var kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 96, 59, 181),
@@ -19,6 +21,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+   await Supabase.initialize(
+    url: Constants.supabaseUrl,
+    anonKey: Constants.supabaseAnonKey,
   );
   runApp(
     ChangeNotifierProvider(
@@ -38,7 +44,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp.router(
           darkTheme: ThemeData.dark().copyWith(
             textTheme: const TextTheme().copyWith(
-                bodyMedium: GoogleFonts.roboto(color: Colors.white),
+                bodyMedium: GoogleFonts.roboto(color: Colors.grey[600]),
                 labelMedium: GoogleFonts.roboto(color: Colors.grey[300])),
             scaffoldBackgroundColor: const Color.fromARGB(255, 49, 45, 45),
             appBarTheme: AppBarTheme.of(context).copyWith(

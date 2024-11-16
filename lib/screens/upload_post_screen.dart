@@ -1,8 +1,41 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:social_media/models/post.dart';
+import 'package:social_media/services/current_user.dart';
+import 'package:social_media/services/post_services.dart';
+import 'package:social_media/services/upload_image.dart';
 
-class UploadPostScreen extends StatelessWidget {
+class UploadPostScreen extends StatefulWidget {
   const UploadPostScreen({super.key});
+
+  @override
+  State<UploadPostScreen> createState() => _UploadPostScreenState();
+}
+
+class _UploadPostScreenState extends State<UploadPostScreen> {
+  File? _pickedImageFile;
+  final captionController = TextEditingController();
+
+  void _pickImage() async {
+    final pickedImage = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 100);
+
+    if (pickedImage == null) {
+      return;
+    }
+
+    setState(() {
+      _pickedImageFile = File(pickedImage.path);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    captionController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +55,26 @@ class UploadPostScreen extends StatelessWidget {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                final currentUser = await CurrentUser().currentUser();
+
+                final postImageUrl = await UploadImage()
+                    .getUserProfileUrl(_pickedImageFile!, 'posts');
+
+                final newPost = Post(
+                  profileUrl: currentUser.profileUrl,
+                  name: currentUser.name,
+                  caption: captionController.text,
+                  imageUrl: postImageUrl,
+                  likesCount: 0,
+                  commentsCount: 0,
+                  comments: [],
+                );
+
+                await PostServices().addPost(newPost);
+
+                captionController.clear();
+              },
               icon: const Icon(Icons.upload),
             ),
           ),
@@ -33,9 +85,19 @@ class UploadPostScreen extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
+              // selected image
+              CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.grey,
+                foregroundImage: _pickedImageFile != null
+                    ? FileImage(_pickedImageFile!)
+                    : null,
+                child: const Icon(Icons.camera_alt),
+              ),
+
               // upload button
               MaterialButton(
-                onPressed: () {},
+                onPressed: _pickImage,
                 color: Colors.blue,
                 child: const Text(
                   'Pick Image',
@@ -46,7 +108,8 @@ class UploadPostScreen extends StatelessWidget {
               const SizedBox(height: 30),
 
               // caption TextFormField
-              TextFormField(
+              TextField(
+                controller: captionController,
                 decoration: InputDecoration(
                   hintText: 'Caption',
                   hintStyle: TextStyle(color: Colors.grey[500]),
@@ -65,15 +128,6 @@ class UploadPostScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                validator: (value) {
-                  if (value!.isEmpty || value.trim().length < 4) {
-                    return 'Please enter atleast 4 characters';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  // enteredName = value!;
-                },
               ),
             ],
           ),

@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/components/post_tile.dart';
 import 'package:social_media/data/dummy_posters.dart';
-import 'package:social_media/data/dummy_posts.dart';
+import 'package:social_media/models/post.dart';
+import 'package:social_media/services/current_user.dart';
+import 'package:social_media/services/post_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +16,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Post> posts = [];
+
+  void fetchPosts() async {
+    final fetchedPosts = await PostServices().allPosts();
+    setState(() {
+      posts = fetchedPosts;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,23 +42,50 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Icon(
-                Icons.lock_open_outlined,
+                Icons.person,
                 size: 120,
                 color: Colors.grey[600],
               ),
-              // Image.asset(
-              //   'assets/images/chat.png',
-              //   width: 120,
-              //   color: Colors.grey[600],
-              // ),
               const SizedBox(height: 40),
+
+              // home
               ListTile(
+                onTap: () {
+                  context.pop();
+                },
                 title: const Text('H O M E'),
                 leading: Icon(
                   Icons.home,
                   color: Colors.grey[600],
                 ),
               ),
+
+              // profile
+              ListTile(
+                onTap: () async {
+                  final currentUser = await CurrentUser().currentUser();
+                  context.push('/profile_screen', extra: currentUser);
+                },
+                title: const Text('P R O F I L E'),
+                leading: Icon(
+                  Icons.person,
+                  color: Colors.grey[600],
+                ),
+              ),
+
+              // search
+              ListTile(
+                onTap: () {
+                  context.push('/search_screen');
+                },
+                title: const Text('S E A R C H'),
+                leading: Icon(
+                  Icons.search,
+                  color: Colors.grey[600],
+                ),
+              ),
+
+              // settings
               ListTile(
                 onTap: () {
                   context.push('/settings_screen');
@@ -83,12 +128,29 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: dummyPosts.length,
-        itemBuilder: (ctx, index) {
-          return PostTile(
-            post: dummyPosts[index],
-            poster: dummyPosters[index],
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (ctx, index) {
+                return PostTile(
+                  post: posts[index],
+                  user: dummyUsers[index],
+                );
+              },
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return const Center(
+            child: Text('There is no post here, start uploading some!', style: TextStyle(color: Colors.black),),
           );
         },
       ),

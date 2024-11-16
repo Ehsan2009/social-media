@@ -1,13 +1,14 @@
-import 'package:social_media/models/poster.dart';
+import 'package:social_media/models/app_user.dart';
 
-final dummyPosters = [
-  Poster(
+final dummyUsers = [
+  AppUser(
+    id: 'i',
     name: 'Ehsan Javdan',
     profileUrl: 'assets/images/poster_image.png',
-    bio: 'Flutter Developer | Mobile App Enthusiast | Writer on Dart & Firebase',
+    email: 'ehsan javaan;',
     postsCount: 1,
     followersCount: 5,
     followingCount: 22,
-    postUrls: ['assets/images/poster_image.png'],
+    posts: [],
   ),
 ];

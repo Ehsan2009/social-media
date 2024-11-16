@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/models/post.dart';
-import 'package:social_media/models/poster.dart';
+import 'package:social_media/models/app_user.dart';
 
 class PostTile extends StatelessWidget {
   const PostTile({
     super.key,
     required this.post,
-    required this.poster,
+    required this.user,
   });
 
   final Post post;
-  final Poster poster;
+  final AppUser user;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +24,16 @@ class PostTile extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.push('/profile_screen', extra: poster);
+                  context.push('/profile_screen', extra: user);
                 },
                 child: Container(
+                  width: 80,
+                  height: 80,
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Image.asset(post.profileUrl),
+                  child: Image.network(post.profileUrl, fit: BoxFit.cover),
                 ),
               ),
               const SizedBox(width: 16),
@@ -41,7 +43,10 @@ class PostTile extends StatelessWidget {
         ),
 
         // poster image
-        Image.asset(post.imageUrl),
+        Container(
+          height: 400,
+          child: Image.network(post.imageUrl, fit: BoxFit.cover,),
+        ),
 
         // poster amount of likes and comments and duration of publication
         Padding(
