@@ -2,6 +2,7 @@ import 'package:social_media/models/post.dart';
 
 final dummyPosts = [
   Post(
+    id: '',
     profileUrl: 'assets/images/poster_profile.png',
     name: 'Ehsan Javdan',
     caption: '',

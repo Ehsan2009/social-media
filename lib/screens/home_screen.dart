@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/components/post_tile.dart';
-import 'package:social_media/data/dummy_posters.dart';
+import 'package:social_media/models/app_user.dart';
 import 'package:social_media/models/post.dart';
-import 'package:social_media/services/current_user.dart';
 import 'package:social_media/services/post_services.dart';
+import 'package:social_media/services/user_services.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Post> posts = [];
+  AppUser? currentUser;
 
   void fetchPosts() async {
     final fetchedPosts = await PostServices().allPosts();
@@ -25,10 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void fetchUser() async {
+    currentUser = await UserServices().currentUser();
+  }
+
   @override
   void initState() {
     super.initState();
     fetchPosts();
+    fetchUser();
   }
 
   @override
@@ -62,8 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // profile
               ListTile(
-                onTap: () async {
-                  final currentUser = await CurrentUser().currentUser();
+                onTap: () {
                   context.push('/profile_screen', extra: currentUser);
                 },
                 title: const Text('P R O F I L E'),
@@ -137,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (ctx, index) {
                 return PostTile(
                   post: posts[index],
-                  user: dummyUsers[index],
                 );
               },
             );

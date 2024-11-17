@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/models/post.dart';
-import 'package:social_media/services/current_user.dart';
 import 'package:social_media/services/post_services.dart';
 import 'package:social_media/services/upload_image.dart';
+import 'package:social_media/services/user_services.dart';
 
 class UploadPostScreen extends StatefulWidget {
   const UploadPostScreen({super.key});
@@ -56,12 +56,13 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
             alignment: Alignment.centerRight,
             child: IconButton(
               onPressed: () async {
-                final currentUser = await CurrentUser().currentUser();
+                final currentUser = await UserServices().currentUser();
 
                 final postImageUrl = await UploadImage()
                     .getUserProfileUrl(_pickedImageFile!, 'posts');
 
                 final newPost = Post(
+                  id: currentUser.id,
                   profileUrl: currentUser.profileUrl,
                   name: currentUser.name,
                   caption: captionController.text,

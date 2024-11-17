@@ -120,7 +120,6 @@ class ProfileScreen extends StatelessWidget {
             ...user.posts.map((post) {
               return PostTile(
                 post: post,
-                user: user,
               );
             }),
           ],

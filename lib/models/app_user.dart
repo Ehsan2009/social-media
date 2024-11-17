@@ -21,12 +21,13 @@ class AppUser {
     required this.posts,
   });
 
-  factory AppUser.fromJson(String id, Map<String, dynamic> json) {
-    final fetchedPosts = (json['posts'] as List<dynamic>?)?.map((postMap) {
+  factory AppUser.fromMap(Map<String, dynamic> map) {
+    final fetchedPosts = (map['posts'] as List<dynamic>?)?.map((postMap) {
           if (postMap is Map<String, dynamic>) {
             return Post.fromMap(postMap);
           } else {
             return Post(
+              id: '',
               profileUrl: '',
               name: '',
               caption: '',
@@ -40,13 +41,13 @@ class AppUser {
         [];
 
     return AppUser(
-      id: id,
-      name: json['name'],
-      email: json['email'],
-      profileUrl: json['profileUrl'],
-      postsCount: json['postsCount'],
-      followersCount: json['followersCount'],
-      followingCount: json['followingCount'],
+      id: map['id'] as String,
+      name: map['name'] as String,
+      email: map['email'] as String,
+      profileUrl: map['profileUrl'] as String,
+      postsCount: map['postsCount'] as int,
+      followersCount: map['followersCount'] as int,
+      followingCount: map['followingCount'] as int,
       posts: fetchedPosts,
     );
   }
