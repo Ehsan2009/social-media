@@ -1,12 +1,13 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:social_media/components/auth_image_picker.dart';
-import 'package:social_media/services/upload_image.dart';
+import 'package:social_media/components/custom_text_field.dart';
+import 'package:social_media/components/user_image_picker.dart';
+import 'package:social_media/services/auth_services.dart';
+import 'package:social_media/services/user_services.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -44,45 +45,44 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         isAuthenticating = true;
       });
+
+      final authServices = AuthServices();
+      final userServices = UserServices();
+
       if (isLogin) {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: enteredEmail.trim(),
-          password: enteredPassword.trim(),
+        await authServices.signIn(
+          enteredEmail.trim(),
+          enteredPassword.trim(),
         );
       } else {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: enteredEmail.trim(),
-          password: enteredPassword.trim(),
+        final profileUrl =
+            await userServices.getUserProfileUrl(_selectedImage!, 'profiles');
+
+        await authServices.signUp(
+          enteredEmail.trim(),
+          enteredPassword.trim(),
         );
 
-        final profileUrl =
-            await UploadImage().getUserProfileUrl(_selectedImage!, 'profiles');
-        final uid = FirebaseAuth.instance.currentUser!.uid;
-
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(uid)
-            .set({
-          'id': uid,
-          'name': enteredName,
-          'email': enteredEmail.trim(),
-          'profileUrl': profileUrl,
-          'postsCount': 0,
-          'followersCount': 0,
-          'followingCount': 0,
-          'posts': [],
-        });
+        await userServices.addUser(
+          enteredName.trim(),
+          enteredEmail.trim(),
+          profileUrl,
+        );
       }
 
-      context.go('/');
+      if (mounted) {
+        context.go('/');
+        setState(() {
+          isAuthenticating = false;
+        });
+      }
     } on FirebaseAuthException catch (error) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.message ?? 'Authentication failed.')),
-      );
-      setState(() {
-        isAuthenticating = false;
-      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message ?? 'Authentication failed.')),
+        );
+      }
     }
   }
 
@@ -95,12 +95,13 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: EdgeInsets.only(top: height / 5, right: 24, left: 24),
+            padding: EdgeInsets.only(
+                top: isLogin ? height / 5 : 34, right: 24, left: 24),
             child: Form(
               key: formKey,
               child: Column(
                 children: [
-                  // adding image
+                  // lock icon
                   Icon(
                     Icons.lock_open_outlined,
                     size: 120,
@@ -122,39 +123,20 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 24),
 
                   // user image picker
-                  UserImagePicker(
-                    onPickImage: (pickedImage) {
-                      _selectedImage = pickedImage;
-                    },
-                    source: ImageSource.camera,
-                    boxRadius: 80,
-                  ),
+                  if (!isLogin)
+                    UserImagePicker(
+                      onPickImage: (pickedImage) {
+                        _selectedImage = pickedImage;
+                      },
+                      source: ImageSource.camera,
+                      boxRadius: 80,
+                    ),
 
                   const SizedBox(height: 24),
 
                   // Name TextFormFields
-                  TextFormField(
-                    cursorColor: Colors.black,
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      hintText: 'Enter name',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      fillColor: Colors.white54,
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  CustomTextField(
+                    hintText: 'Enter name',
                     validator: (value) {
                       if (value!.isEmpty || value.trim().length < 4) {
                         return 'Please enter atleast 4 characters';
@@ -169,28 +151,8 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 16),
 
                   // Email TextFormFields
-                  TextFormField(
-                    cursorColor: Colors.black,
-                    style: const TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                      hintText: 'Enter email',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      fillColor: Colors.white54,
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  CustomTextField(
+                    hintText: 'Enter email',
                     validator: (value) {
                       if (value!.isEmpty || !value.contains('@')) {
                         return 'Please enter a valid email address';
@@ -205,30 +167,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 16),
 
                   // password TextFormFields
-                  TextFormField(
+                  CustomTextField(
                     controller: passwordController,
-                    cursorColor: Colors.black,
-                    style: const TextStyle(color: Colors.black),
+                    hintText: 'Enter password',
                     obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: 'Enter password',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      fillColor: Colors.white54,
-                      filled: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
                     validator: (value) {
                       if (value!.isEmpty || value.trim().length < 6) {
                         return 'Please enter a valid password with atleast 6 characters';
@@ -258,29 +200,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
                   // password confirm TextFormFields
                   if (!isLogin)
-                    TextFormField(
-                      cursorColor: Colors.black,
-                      style: const TextStyle(color: Colors.black),
+                    CustomTextField(
+                      hintText: 'Confirm password',
                       obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Confirm password',
-                        hintStyle: TextStyle(color: Colors.grey[500]),
-                        fillColor: Colors.white54,
-                        filled: true,
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
                       validator: (value) {
                         if (value!.isEmpty ||
                             value != passwordController.text) {

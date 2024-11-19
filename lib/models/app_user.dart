@@ -51,18 +51,4 @@ class AppUser {
       posts: fetchedPosts,
     );
   }
-
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'id': id,
-  //     'name': name,
-  //     'email': email.trim(),
-  //     'profileUrl': profileUrl,
-  //     'bio': bio,
-  //     'postsCount': postsCount,
-  //     'followersCount': followersCount,
-  //     'followingCount': followingCount,
-  //     'postUrls': postUrls,
-  //   };
-  // }
 }

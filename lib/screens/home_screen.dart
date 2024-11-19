@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void fetchUser() async {
+  void fetchCurrentUser() async {
     currentUser = await UserServices().currentUser();
   }
 
@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchPosts();
-    fetchUser();
+    fetchCurrentUser();
   }
 
   @override
@@ -102,6 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const Spacer(),
+              
+              // log out
               ListTile(
                 onTap: () {
                   FirebaseAuth.instance.signOut();

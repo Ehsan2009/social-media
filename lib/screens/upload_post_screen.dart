@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/models/post.dart';
 import 'package:social_media/services/post_services.dart';
-import 'package:social_media/services/upload_image.dart';
 import 'package:social_media/services/user_services.dart';
 
 class UploadPostScreen extends StatefulWidget {
@@ -17,6 +16,37 @@ class UploadPostScreen extends StatefulWidget {
 class _UploadPostScreenState extends State<UploadPostScreen> {
   File? _pickedImageFile;
   final captionController = TextEditingController();
+  var isUploading = false;
+
+  void uploadPost() async {
+    setState(() {
+      isUploading = true;
+    });
+    
+    final currentUser = await UserServices().currentUser();
+
+    final postImageUrl =
+        await UserServices().getUserProfileUrl(_pickedImageFile!, 'posts');
+
+    final newPost = Post(
+      id: currentUser.id,
+      profileUrl: currentUser.profileUrl,
+      name: currentUser.name,
+      caption: captionController.text,
+      imageUrl: postImageUrl,
+      likesCount: 0,
+      commentsCount: 0,
+      comments: [],
+    );
+    
+    await PostServices().addPost(newPost);
+
+    captionController.clear();
+
+    setState(() {
+      isUploading = false;
+    });
+  }
 
   void _pickImage() async {
     final pickedImage = await ImagePicker()
@@ -55,82 +85,61 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              onPressed: () async {
-                final currentUser = await UserServices().currentUser();
-
-                final postImageUrl = await UploadImage()
-                    .getUserProfileUrl(_pickedImageFile!, 'posts');
-
-                final newPost = Post(
-                  id: currentUser.id,
-                  profileUrl: currentUser.profileUrl,
-                  name: currentUser.name,
-                  caption: captionController.text,
-                  imageUrl: postImageUrl,
-                  likesCount: 0,
-                  commentsCount: 0,
-                  comments: [],
-                );
-
-                await PostServices().addPost(newPost);
-
-                captionController.clear();
-              },
-              icon: const Icon(Icons.upload),
+              onPressed: uploadPost,
+              icon: isUploading ? const CircularProgressIndicator(color: Colors.blueAccent) : const Icon(Icons.upload),
             ),
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              // selected image
-              CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.grey,
-                foregroundImage: _pickedImageFile != null
-                    ? FileImage(_pickedImageFile!)
-                    : null,
-                child: const Icon(Icons.camera_alt),
-              ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              children: [
+                // selected image
+                if (_pickedImageFile != null)
+                  Image.file(_pickedImageFile!, height: 300),
 
-              // upload button
-              MaterialButton(
-                onPressed: _pickImage,
-                color: Colors.blue,
-                child: const Text(
-                  'Pick Image',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
+                const SizedBox(height: 20),
 
-              const SizedBox(height: 30),
-
-              // caption TextFormField
-              TextField(
-                controller: captionController,
-                decoration: InputDecoration(
-                  hintText: 'Caption',
-                  hintStyle: TextStyle(color: Colors.grey[500]),
-                  filled: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: const BorderSide(
-                      color: Colors.white,
-                    ),
+                // upload button
+                MaterialButton(
+                  onPressed: _pickImage,
+                  color: Colors.blue,
+                  child: const Text(
+                    'Pick Image',
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 30),
+
+                // caption TextFormField
+                TextField(
+                  controller: captionController,
+                  style: const TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    hintText: 'Caption',
+                    hintStyle: TextStyle(color: Colors.grey[500]),
+                    filled: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: const BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: const BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

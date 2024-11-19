@@ -1,12 +1,29 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:social_media/models/app_user.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserServices {
-  final currentUid = FirebaseAuth.instance.currentUser!.uid;
   final firebaseFirestore = FirebaseFirestore.instance;
 
+  Future<void> addUser(String name, String email, String profileUrl) async {
+    final currentUid = FirebaseAuth.instance.currentUser!.uid;
+    await FirebaseFirestore.instance.collection('users').doc(currentUid).set({
+      'id': currentUid,
+      'name': name,
+      'email': email.trim(),
+      'profileUrl': profileUrl,
+      'postsCount': 0,
+      'followersCount': 0,
+      'followingCount': 0,
+      'posts': [],
+    });
+  }
+
   Future<AppUser> currentUser() async {
+    final currentUid = FirebaseAuth.instance.currentUser!.uid;
     final userSnapshot =
         await firebaseFirestore.collection('users').doc(currentUid).get();
 
@@ -33,5 +50,16 @@ class UserServices {
     }
 
     return users;
+  }
+
+  Future<String> getUserProfileUrl(File imageFile, String bucket) async {
+    final supabase = Supabase.instance.client;
+    final fileName = 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    await supabase.storage.from(bucket).upload(fileName, imageFile);
+
+    final imageUrl = supabase.storage.from(bucket).getPublicUrl(fileName);
+
+    return imageUrl;
   }
 }

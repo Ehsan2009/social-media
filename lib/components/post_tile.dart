@@ -60,6 +60,7 @@ class _PostTileState extends State<PostTile> {
 
         // poster image
         Container(
+          width: double.infinity,
           height: 400,
           child: Image.network(widget.post.imageUrl, fit: BoxFit.cover,),
         ),
