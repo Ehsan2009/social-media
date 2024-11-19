@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp.router(
           darkTheme: ThemeData.dark().copyWith(
             textTheme: const TextTheme().copyWith(
-                bodyMedium: GoogleFonts.roboto(color: Colors.grey[600]),
+                bodyMedium: GoogleFonts.roboto(color: Colors.grey[500]),
                 labelMedium: GoogleFonts.roboto(color: Colors.grey[300])),
             scaffoldBackgroundColor: const Color.fromARGB(255, 49, 45, 45),
             appBarTheme: AppBarTheme.of(context).copyWith(
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
           ),
           theme: ThemeData().copyWith(
             textTheme: const TextTheme().copyWith(
-              bodyMedium: GoogleFonts.roboto(color: Colors.black),
+              bodyMedium: GoogleFonts.roboto(color: Colors.grey[600]),
               labelMedium: GoogleFonts.roboto(color: Colors.grey[600]),
             ),
             scaffoldBackgroundColor: Colors.grey[300],
