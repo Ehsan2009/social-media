@@ -33,7 +33,6 @@ class AppUser {
               caption: '',
               imageUrl: '',
               likesCount: 0,
-              commentsCount: 0,
               comments: [],
             );
           }

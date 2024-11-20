@@ -14,6 +14,8 @@ class PostServices {
         'posts': FieldValue.arrayUnion([postMap]),
       },
     );
+
+    await firebaseFirestore.collection('posts').add(postMap);
   }
 
   Future<void> addComment(String postId, String newComment) async {

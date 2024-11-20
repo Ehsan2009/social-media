@@ -61,7 +61,7 @@ class _PostTileState extends State<PostTile> {
         ),
 
         // poster image
-        Container(
+        SizedBox(
           width: double.infinity,
           height: 400,
           child: Image.network(
@@ -107,7 +107,7 @@ class _PostTileState extends State<PostTile> {
               ),
               const SizedBox(width: 5),
               Text(
-                '${widget.post.likesCount}',
+                '${widget.post.comments.length}',
                 style: TextStyle(
                   color: Colors.grey[600],
                 ),

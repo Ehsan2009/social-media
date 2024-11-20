@@ -5,7 +5,6 @@ class Post {
   final String caption;
   final String imageUrl;
   final int likesCount;
-  final int commentsCount;
   final List<String> comments;
 
   Post({
@@ -15,7 +14,6 @@ class Post {
     required this.caption,
     required this.imageUrl,
     required this.likesCount,
-    required this.commentsCount,
     required this.comments,
   });
 
@@ -27,7 +25,6 @@ class Post {
       caption: map['caption'] as String,
       imageUrl: map['imageUrl'] as String,
       likesCount: map['likesCount'] as int,
-      commentsCount: map['commentsCount'] as int,
       comments: List<String>.from(map['comments'] as List),
     );
   }
@@ -40,7 +37,6 @@ class Post {
       'caption': caption,
       'imageUrl': imageUrl,
       'likesCount': likesCount,
-      'commentsCount': commentsCount,
       'comments': comments,
     };
   }

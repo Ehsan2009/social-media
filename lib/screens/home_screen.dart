@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:social_media/components/post_tile.dart';
 import 'package:social_media/models/app_user.dart';
 import 'package:social_media/models/post.dart';
-import 'package:social_media/services/post_services.dart';
 import 'package:social_media/services/user_services.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,15 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Post> posts = [];
   AppUser? currentUser;
-
-  void fetchPosts() async {
-    final fetchedPosts = await PostServices().allPosts();
-    setState(() {
-      posts = fetchedPosts;
-    });
-  }
 
   void fetchCurrentUser() async {
     currentUser = await UserServices().currentUser();
@@ -33,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    fetchPosts();
     fetchCurrentUser();
   }
 
@@ -102,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const Spacer(),
-              
+
               // log out
               ListTile(
                 onTap: () {
@@ -139,6 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            final posts = snapshot.data!.docs
+          .map((doc) => Post.fromMap(doc.data()))
+          .toList();
+
             return ListView.builder(
               itemCount: posts.length,
               itemBuilder: (ctx, index) {
@@ -156,7 +150,10 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return const Center(
-            child: Text('There is no post here, start uploading some!', style: TextStyle(color: Colors.black),),
+            child: Text(
+              'There is no post here, start uploading some!',
+              style: TextStyle(color: Colors.black),
+            ),
           );
         },
       ),

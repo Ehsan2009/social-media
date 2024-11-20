@@ -35,7 +35,6 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
       caption: captionController.text,
       imageUrl: postImageUrl,
       likesCount: 0,
-      commentsCount: 0,
       comments: [],
     );
     

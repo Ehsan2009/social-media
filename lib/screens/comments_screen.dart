@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media/components/custom_text_field.dart';
 import 'package:social_media/models/post.dart';
@@ -23,7 +24,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
     super.dispose();
     commentController.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,21 +42,40 @@ class _CommentsScreenState extends State<CommentsScreen> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            widget.post.comments.isEmpty
-                ? const Center(
-                    child: Text('There is no comment for this post!'),
-                  )
-                : Expanded(
-                  child: ListView.builder(
-                    itemCount: widget.post.comments.length,
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(widget.post.id)
+                    .snapshots(),
+                builder: (ctx, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Text('There is no comment for this post!'),
+                    );
+                  }
+
+                  final userDoc = snapshot.data!;
+                  final posts =
+                      List<Map<String, dynamic>>.from(userDoc['posts']);
+
+                  final post =
+                      posts.firstWhere((post) => post['id'] == widget.post.id);
+
+                  final postModel = Post.fromMap(post);
+
+                  return ListView.builder(
+                    itemCount: postModel.comments.length,
                     itemBuilder: (ctx, index) {
                       return Text(
-                        widget.post.comments[index],
+                        postModel.comments[index],
                         style: const TextStyle(color: Colors.black),
                       );
                     },
-                  ),
-                ),
+                  );
+                },
+              ),
+            ),
             const Spacer(),
             Row(
               children: [
@@ -74,7 +94,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         widget.post.id, commentController.text);
 
                     commentController.clear();
-                    print(widget.post.comments);
                   },
                   shape: const CircleBorder(),
                   elevation: 0,
