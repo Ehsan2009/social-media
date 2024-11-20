@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/models/post.dart';
 import 'package:social_media/models/app_user.dart';
+import 'package:social_media/screens/comments_screen.dart';
 import 'package:social_media/services/user_services.dart';
 
 class PostTile extends StatefulWidget {
@@ -28,7 +29,7 @@ class _PostTileState extends State<PostTile> {
   void recievedUser() async {
     fetchedUser = await UserServices().openUserProfile(widget.post.id);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,7 +50,8 @@ class _PostTileState extends State<PostTile> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Image.network(widget.post.profileUrl, fit: BoxFit.cover),
+                  child:
+                      Image.network(widget.post.profileUrl, fit: BoxFit.cover),
                 ),
               ),
               const SizedBox(width: 16),
@@ -62,7 +64,10 @@ class _PostTileState extends State<PostTile> {
         Container(
           width: double.infinity,
           height: 400,
-          child: Image.network(widget.post.imageUrl, fit: BoxFit.cover,),
+          child: Image.network(
+            widget.post.imageUrl,
+            fit: BoxFit.cover,
+          ),
         ),
 
         // poster amount of likes and comments and duration of publication
@@ -82,9 +87,23 @@ class _PostTileState extends State<PostTile> {
                 ),
               ),
               const SizedBox(width: 10),
-              Icon(
-                Icons.comment,
-                color: Colors.grey[600],
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    useSafeArea: true,
+                    context: context,
+                    builder: (ctx) {
+                      return CommentsScreen(
+                        post: widget.post,
+                      );
+                    },
+                  );
+                },
+                child: Icon(
+                  Icons.comment,
+                  color: Colors.grey[600],
+                ),
               ),
               const SizedBox(width: 5),
               Text(

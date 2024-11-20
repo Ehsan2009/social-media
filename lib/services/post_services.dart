@@ -8,12 +8,30 @@ class PostServices {
 
   Future<void> addPost(Post newPost) async {
     final postMap = newPost.toMap();
-    
+
     await firebaseFirestore.collection('users').doc(uid).update(
       {
         'posts': FieldValue.arrayUnion([postMap]),
       },
     );
+  }
+
+  Future<void> addComment(String postId, String newComment) async {
+    if (newComment == '') return;
+
+    final userDoc = firebaseFirestore.collection('users').doc(uid);
+
+    // Fetch the user's posts
+    final snapshot = await userDoc.get();
+    final posts =
+        List<Map<String, dynamic>>.from(snapshot.data()?['posts'] ?? []);
+
+    final postIndex = posts.indexWhere((post) => post['id'] == postId);
+
+    posts[postIndex]['comments'] =
+        List<String>.from(posts[postIndex]['comments'] ?? [])..add(newComment);
+
+    await userDoc.update({'posts': posts});
   }
 
   Future<List<Post>> allPosts() async {
@@ -35,5 +53,4 @@ class PostServices {
 
     return posts;
   }
-  
 }

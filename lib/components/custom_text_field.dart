@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onSaved,
+    this.borderSideColor,
   });
 
   final String hintText;
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
+  final Color? borderSideColor;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +39,8 @@ class CustomTextField extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(
-            color: Colors.white,
+          borderSide: BorderSide(
+            color: borderSideColor ?? Colors.white,
           ),
         ),
       ),
