@@ -4,6 +4,7 @@ import 'package:social_media/models/post.dart';
 import 'package:social_media/models/app_user.dart';
 import 'package:social_media/screens/comments_screen.dart';
 import 'package:social_media/services/user_services.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class PostTile extends StatefulWidget {
   const PostTile({
@@ -50,8 +51,11 @@ class _PostTileState extends State<PostTile> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child:
-                      Image.network(widget.post.profileUrl, fit: BoxFit.cover),
+                  child: FadeInImage(
+                    placeholder: MemoryImage(kTransparentImage),
+                    image: NetworkImage(widget.post.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -61,13 +65,12 @@ class _PostTileState extends State<PostTile> {
         ),
 
         // poster image
-        SizedBox(
-          width: double.infinity,
+        FadeInImage(
+          placeholder: MemoryImage(kTransparentImage),
+          image: NetworkImage(widget.post.imageUrl),
+          fit: BoxFit.cover,
           height: 400,
-          child: Image.network(
-            widget.post.imageUrl,
-            fit: BoxFit.cover,
-          ),
+          width: double.infinity,
         ),
 
         // poster amount of likes and comments and duration of publication

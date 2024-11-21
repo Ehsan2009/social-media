@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:social_media/components/post_tile.dart';
+import 'package:social_media/components/shimmer_post_tile.dart';
 import 'package:social_media/models/app_user.dart';
 import 'package:social_media/models/post.dart';
 import 'package:social_media/services/user_services.dart';
@@ -19,6 +22,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void fetchCurrentUser() async {
     currentUser = await UserServices().currentUser();
+  }
+
+  bool heckConnectivity() {
+    var isConnected = false;
+
+    Connectivity().onConnectivityChanged.listen((connectivityResults) {
+      setState(() {
+        // Check if any of the connectivity results indicate a connection
+        isConnected = connectivityResults
+            .any((result) => result != ConnectivityResult.none);
+      });
+    });
+
+    return isConnected;
   }
 
   @override
@@ -128,10 +145,19 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: Text(
+                  'There is no post here, start uploading some!',
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
+            }
+
             final posts = snapshot.data!.docs
-          .map((doc) => Post.fromMap(doc.data()))
-          .toList();
+                .map((doc) => Post.fromMap(doc.data()))
+                .toList();
 
             return ListView.builder(
               itemCount: posts.length,
@@ -143,17 +169,22 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            const Center(
-              child: CircularProgressIndicator(),
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              snapshot.hasError ||
+              !heckConnectivity()) {
+            return Shimmer.fromColors(
+              baseColor: Colors.grey.shade400,
+              highlightColor: const Color.fromRGBO(255, 255, 255, 1),
+              child: ListView.builder(
+                itemCount: 10,
+                itemBuilder: (ctx, index) {
+                  return const ShimmerPostTile();
+                },
+              ),
             );
           }
-
           return const Center(
-            child: Text(
-              'There is no post here, start uploading some!',
-              style: TextStyle(color: Colors.black),
-            ),
+            child: CircularProgressIndicator(),
           );
         },
       ),
