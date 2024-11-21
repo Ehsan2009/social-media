@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.connectionState == ConnectionState.active) {
             if (!snapshot.hasData) {
               return const Center(
                 child: Text(
@@ -153,38 +153,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(color: Colors.black),
                 ),
               );
-            }
+            } else {
+              final posts = snapshot.data!.docs
+                  .map((doc) => Post.fromMap(doc.data()))
+                  .toList();
 
-            final posts = snapshot.data!.docs
-                .map((doc) => Post.fromMap(doc.data()))
-                .toList();
-
-            return ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (ctx, index) {
-                return PostTile(
-                  post: posts[index],
-                );
-              },
-            );
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              snapshot.hasError ||
-              !heckConnectivity()) {
-            return Shimmer.fromColors(
-              baseColor: Colors.grey.shade400,
-              highlightColor: const Color.fromRGBO(255, 255, 255, 1),
-              child: ListView.builder(
-                itemCount: 10,
+              return ListView.builder(
+                itemCount: posts.length,
                 itemBuilder: (ctx, index) {
-                  return const ShimmerPostTile();
+                  return PostTile(
+                    post: posts[index],
+                  );
                 },
-              ),
-            );
+              );
+            }
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade400,
+            highlightColor: const Color.fromRGBO(255, 255, 255, 1),
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (ctx, index) {
+                return const ShimmerPostTile();
+              },
+            ),
           );
         },
       ),

@@ -27,7 +27,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText ?? false,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey[500]),
+        hintStyle: TextStyle(color: Colors.grey.shade400),
         fillColor: Colors.white54,
         filled: true,
         floatingLabelBehavior: FloatingLabelBehavior.never,

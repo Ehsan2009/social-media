@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media/components/post_tile.dart';
 import 'package:social_media/models/app_user.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({
@@ -21,7 +22,7 @@ class ProfileScreen extends StatelessWidget {
           user.name,
           style: GoogleFonts.roboto(
             fontSize: 18,
-            color: Colors.grey[700],
+            color: Colors.grey.shade600,
           ),
         ),
         centerTitle: true,
@@ -29,25 +30,25 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Text('ehsanjavdan77@gmail.com'),
-        
+            Text(user.email),
+
             const SizedBox(height: 30),
-        
+
             // profile
             Container(
               width: 140,
               height: 140,
               decoration: const BoxDecoration(shape: BoxShape.circle),
               clipBehavior: Clip.hardEdge,
-              child: Image.network(
-                user.profileUrl,
-                width: 300,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(user.profileUrl),
                 fit: BoxFit.cover,
               ),
             ),
-        
+
             const SizedBox(height: 20),
-        
+
             // followers, following and posts
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -55,9 +56,12 @@ class ProfileScreen extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      '${user.postsCount}',
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      '${user.posts.length}',
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
                     const Text('Posts'),
                   ],
@@ -67,8 +71,11 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       '${user.followersCount}',
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
                     const Text('Followers')
                   ],
@@ -78,17 +85,20 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       '${user.followingCount}',
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
                     const Text('Following')
                   ],
                 ),
               ],
             ),
-        
+
             const SizedBox(height: 24),
-        
+
             // follow button
             Container(
               width: 350,
@@ -105,9 +115,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
-        
+
             const SizedBox(height: 20),
-        
+
             // posts
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
@@ -116,12 +126,21 @@ class ProfileScreen extends StatelessWidget {
                 child: Text('Posts'),
               ),
             ),
-        
-            ...user.posts.map((post) {
-              return PostTile(
-                post: post,
-              );
-            }),
+
+            if (user.posts.isNotEmpty)
+              ...user.posts.map(
+                (post) {
+                  return PostTile(
+                    post: post,
+                  );
+                },
+              )
+            else
+
+              Padding(
+                padding: const EdgeInsets.only(top: 100),
+                child: const Text('This account has no post.'),
+              ),
           ],
         ),
       ),

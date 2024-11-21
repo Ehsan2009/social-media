@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:social_media/components/custom_text_field.dart';
 import 'package:social_media/models/post.dart';
 import 'package:social_media/services/post_services.dart';
 import 'package:social_media/services/user_services.dart';
@@ -22,7 +23,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
     setState(() {
       isUploading = true;
     });
-    
+
     final currentUser = await UserServices().currentUser();
 
     final postImageUrl =
@@ -37,7 +38,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
       likesCount: 0,
       comments: [],
     );
-    
+
     await PostServices().addPost(newPost);
 
     captionController.clear();
@@ -85,7 +86,9 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
             alignment: Alignment.centerRight,
             child: IconButton(
               onPressed: uploadPost,
-              icon: isUploading ? const CircularProgressIndicator(color: Colors.blueAccent) : const Icon(Icons.upload),
+              icon: isUploading
+                  ? const CircularProgressIndicator(color: Colors.blueAccent)
+                  : const Icon(Icons.upload),
             ),
           ),
         ],
@@ -115,27 +118,9 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
                 const SizedBox(height: 30),
 
                 // caption TextFormField
-                TextField(
+                CustomTextField(
                   controller: captionController,
-                  style: const TextStyle(color: Colors.black),
-                  decoration: InputDecoration(
-                    hintText: 'Caption',
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    filled: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  hintText: 'Caption',
                 ),
               ],
             ),

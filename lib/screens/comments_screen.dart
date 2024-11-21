@@ -67,16 +67,28 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   return ListView.builder(
                     itemCount: postModel.comments.length,
                     itemBuilder: (ctx, index) {
-                      return Text(
-                        postModel.comments[index],
-                        style: const TextStyle(color: Colors.black),
+                      return Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              postModel.comments[index],
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const Divider()
+                          ],
+                        ),
                       );
                     },
                   );
                 },
               ),
             ),
-            const Spacer(),
+            // const Spacer(),
             Row(
               children: [
                 Expanded(
