@@ -46,7 +46,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
               child: StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('users')
-                    .doc(widget.post.id)
+                    .doc(widget.post.userId)
                     .snapshots(),
                 builder: (ctx, snapshot) {
                   if (!snapshot.hasData) {
@@ -59,8 +59,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   final posts =
                       List<Map<String, dynamic>>.from(userDoc['posts']);
 
-                  final post =
-                      posts.firstWhere((post) => post['id'] == widget.post.id);
+                  final post = posts
+                      .firstWhere((post) => post['postId'] == widget.post.postId);
 
                   final postModel = Post.fromMap(post);
 
@@ -88,7 +88,6 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 },
               ),
             ),
-            // const Spacer(),
             Row(
               children: [
                 Expanded(
@@ -103,7 +102,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   onPressed: () async {
                     final postServices = PostServices();
                     await postServices.addComment(
-                        widget.post.id, commentController.text);
+                      widget.post.postId,
+                      widget.post.userId,
+                      commentController.text,
+                    );
 
                     commentController.clear();
                   },

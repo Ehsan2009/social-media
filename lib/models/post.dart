@@ -1,5 +1,10 @@
+import 'package:uuid/uuid.dart';
+
+const uuid = Uuid();
+
 class Post {
-  final String id;
+  final String postId;
+  final String userId;
   final String profileUrl;
   final String name;
   final String caption;
@@ -8,18 +13,20 @@ class Post {
   final List<String> comments;
 
   Post({
-    required this.id,
+    String? postId,
+    required this.userId,
     required this.profileUrl,
     required this.name,
     required this.caption,
     required this.imageUrl,
     required this.likesCount,
     required this.comments,
-  });
+  }) : postId = postId ?? uuid.v4();
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
-      id: map['id'] as String,
+      postId: map['postId'] as String,
+      userId: map['userId'] as String,
       profileUrl: map['profileUrl'] as String,
       name: map['name'] as String,
       caption: map['caption'] as String,
@@ -31,7 +38,8 @@ class Post {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'postId': postId,
+      'userId': userId,
       'profileUrl': profileUrl,
       'name': name,
       'caption': caption,

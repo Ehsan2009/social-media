@@ -136,10 +136,9 @@ class ProfileScreen extends StatelessWidget {
                 },
               )
             else
-
-              Padding(
-                padding: const EdgeInsets.only(top: 100),
-                child: const Text('This account has no post.'),
+              const Padding(
+                padding: EdgeInsets.only(top: 100),
+                child: Text('This account has no post.'),
               ),
           ],
         ),

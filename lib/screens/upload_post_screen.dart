@@ -30,7 +30,7 @@ class _UploadPostScreenState extends State<UploadPostScreen> {
         await UserServices().getUserProfileUrl(_pickedImageFile!, 'posts');
 
     final newPost = Post(
-      id: currentUser.id,
+      userId: currentUser.id,
       profileUrl: currentUser.profileUrl,
       name: currentUser.name,
       caption: captionController.text,

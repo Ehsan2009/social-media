@@ -25,7 +25,8 @@ class AppUser {
             return Post.fromMap(postMap);
           } else {
             return Post(
-              id: '',
+              postId: '',
+              userId: '',
               profileUrl: '',
               name: '',
               caption: '',

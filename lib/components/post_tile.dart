@@ -28,7 +28,7 @@ class _PostTileState extends State<PostTile> {
   }
 
   void recievedUser() async {
-    fetchedUser = await UserServices().openUserProfile(widget.post.id);
+    fetchedUser = await UserServices().openUserProfile(widget.post.userId);
   }
 
   @override
@@ -53,7 +53,7 @@ class _PostTileState extends State<PostTile> {
                   ),
                   child: FadeInImage(
                     placeholder: MemoryImage(kTransparentImage),
-                    image: NetworkImage(widget.post.imageUrl),
+                    image: NetworkImage(widget.post.profileUrl),
                     fit: BoxFit.cover,
                   ),
                 ),

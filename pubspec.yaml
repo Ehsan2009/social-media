@@ -46,6 +46,7 @@ dependencies:
   shimmer: ^3.0.0
   transparent_image: ^2.0.1
   connectivity_plus: ^6.1.0
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
