@@ -18,6 +18,7 @@ class CommentsScreen extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsScreen> {
   final commentController = TextEditingController();
+  var isLoading = false;
 
   @override
   void dispose() {
@@ -100,6 +101,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 const SizedBox(width: 16),
                 FloatingActionButton(
                   onPressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
                     final postServices = PostServices();
                     await postServices.addComment(
                       widget.post.postId,
@@ -108,11 +112,15 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     );
 
                     commentController.clear();
+
+                    setState(() {
+                      isLoading = false;
+                    });
                   },
                   shape: const CircleBorder(),
                   elevation: 0,
                   backgroundColor: Colors.lightGreen,
-                  child: const Icon(Icons.arrow_upward_rounded),
+                  child: isLoading ? const CircularProgressIndicator() : const Icon(Icons.arrow_upward_rounded),
                 ),
               ],
             ),

@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/models/post.dart';
 import 'package:social_media/models/app_user.dart';
 import 'package:social_media/screens/comments_screen.dart';
+import 'package:social_media/services/post_services.dart';
 import 'package:social_media/services/user_services.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -20,6 +22,7 @@ class PostTile extends StatefulWidget {
 
 class _PostTileState extends State<PostTile> {
   AppUser? fetchedUser;
+  var isLiked = false;
 
   @override
   void initState() {
@@ -74,57 +77,97 @@ class _PostTileState extends State<PostTile> {
         ),
 
         // poster amount of likes and comments and duration of publication
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.favorite,
-                color: Colors.red,
-              ),
-              const SizedBox(width: 5),
-              Text(
-                '${widget.post.likesCount}',
-                style: TextStyle(
-                  color: Colors.grey[600],
+        StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.post.userId)
+                .snapshots(),
+            builder: (ctx, snapshot) {
+              final userDoc = snapshot.data!;
+              final posts = List<Map<String, dynamic>>.from(userDoc['posts']);
+
+              final post = posts
+                  .firstWhere((post) => post['postId'] == widget.post.postId);
+
+              final postModel = Post.fromMap(post);
+
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        if (!isLiked) {
+                          await PostServices().like(
+                            widget.post.postId,
+                            widget.post.userId,
+                            postModel.likesCount,
+                          );
+                        } else {
+                          await PostServices().unLike(
+                            widget.post.postId,
+                            widget.post.userId,
+                            postModel.likesCount,
+                          );
+                        }
+                        setState(() {
+                          isLiked = !isLiked;
+                        });
+                      },
+                      child: isLiked
+                          ? const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            )
+                          : Icon(
+                              Icons.favorite_border,
+                              color: Colors.grey[600],
+                            ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${postModel.likesCount}',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          useSafeArea: true,
+                          context: context,
+                          builder: (ctx) {
+                            return CommentsScreen(
+                              post: widget.post,
+                            );
+                          },
+                        );
+                      },
+                      child: Icon(
+                        Icons.comment,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      '${postModel.comments.length}',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '34 minutes ago',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    useSafeArea: true,
-                    context: context,
-                    builder: (ctx) {
-                      return CommentsScreen(
-                        post: widget.post,
-                      );
-                    },
-                  );
-                },
-                child: Icon(
-                  Icons.comment,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(width: 5),
-              Text(
-                '${widget.post.comments.length}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '34 minutes ago',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
+              );
+            }),
       ],
     );
   }

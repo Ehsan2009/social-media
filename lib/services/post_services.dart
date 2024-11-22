@@ -18,7 +18,7 @@ class PostServices {
     await firebaseFirestore.collection('posts').add(postMap);
   }
 
-  Future<void> likePost(String postId, int likesCount) async {
+  Future<void> like(String postId, String userId, int likesCount) async {
     final userDoc = firebaseFirestore.collection('users').doc(uid);
 
     // Fetch the user's posts
@@ -26,11 +26,30 @@ class PostServices {
     final posts =
         List<Map<String, dynamic>>.from(snapshot.data()?['posts'] ?? []);
 
-    final postIndex = posts.indexWhere((post) => post['id'] == postId);
+    final postIndex = posts.indexWhere((post) => post['postId'] == postId);
 
-    posts[postIndex]['likesCount'] = likesCount++;
+    posts[postIndex]['likesCount'] = likesCount + 1;
 
     await userDoc.update({'posts': posts});
+
+    await firebaseFirestore.collection('posts').doc(postId).collection('likers').add({'hasLiked': userId});
+  }
+
+    Future<void> unLike(String postId, String userId, int likesCount) async {
+    final userDoc = firebaseFirestore.collection('users').doc(uid);
+
+    // Fetch the user's posts
+    final snapshot = await userDoc.get();
+    final posts =
+        List<Map<String, dynamic>>.from(snapshot.data()?['posts'] ?? []);
+
+    final postIndex = posts.indexWhere((post) => post['postId'] == postId);
+
+    posts[postIndex]['likesCount'] = likesCount - 1;
+
+    await userDoc.update({'posts': posts});
+
+    await firebaseFirestore.collection('posts').doc(postId).collection('likers').add({'hasLiked': userId});
   }
 
   Future<void> addComment(String postId, String userId, String newComment) async {
