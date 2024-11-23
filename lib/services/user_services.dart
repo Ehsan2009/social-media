@@ -18,6 +18,7 @@ class UserServices {
       'postsCount': 0,
       'followersCount': 0,
       'followingCount': 0,
+      'followers': [],
       'posts': [],
     });
   }
@@ -61,5 +62,52 @@ class UserServices {
     final imageUrl = supabase.storage.from(bucket).getPublicUrl(fileName);
 
     return imageUrl;
+  }
+
+  Future<void> follow(String userId, String followerId) async {
+    final userDoc = firebaseFirestore.collection('users').doc(userId);
+
+    final snapshot = await userDoc.get();
+
+    final userData = snapshot.data();
+    List<String> followers = List<String>.from(userData?['followers'] ?? []);
+
+    followers.add(followerId);
+
+    await userDoc.update({'followers': followers});
+
+
+    // following
+    final currentUid = FirebaseAuth.instance.currentUser!.uid;
+
+    final currentUserDoc =
+        firebaseFirestore.collection('users').doc(currentUid);
+
+    await currentUserDoc.update({
+      'followingCount': FieldValue.increment(1),
+    });
+  }
+
+  Future<void> unfollow(String userId, String followerId) async {
+    final userDoc = firebaseFirestore.collection('users').doc(userId);
+
+    final snapshot = await userDoc.get();
+
+    final userData = snapshot.data();
+    List<String> followers = List<String>.from(userData?['followers'] ?? []);
+
+    followers.remove(followerId);
+
+    await userDoc.update({'followers': followers});
+
+    // unfollowing
+    final currentUid = FirebaseAuth.instance.currentUser!.uid;
+
+    final currentUserDoc =
+        firebaseFirestore.collection('users').doc(currentUid);
+
+    await currentUserDoc.update({
+      'followingCount': FieldValue.increment(-1),
+    });
   }
 }

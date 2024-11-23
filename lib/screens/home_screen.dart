@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,20 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void fetchCurrentUser() async {
     currentUser = await UserServices().currentUser();
-  }
-
-  bool heckConnectivity() {
-    var isConnected = false;
-
-    Connectivity().onConnectivityChanged.listen((connectivityResults) {
-      setState(() {
-        // Check if any of the connectivity results indicate a connection
-        isConnected = connectivityResults
-            .any((result) => result != ConnectivityResult.none);
-      });
-    });
-
-    return isConnected;
   }
 
   @override
@@ -145,28 +130,34 @@ class _HomeScreenState extends State<HomeScreen> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('posts').snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: Text(
-                  'There is no post here, start uploading some!',
-                  style: TextStyle(color: Colors.black),
-                ),
-              );
-            } else {
-              final posts = snapshot.data!.docs
-                  .map((doc) => Post.fromMap(doc.data()))
-                  .toList();
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-              return ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (ctx, index) {
-                  return PostTile(
-                    post: posts[index],
-                  );
-                },
-              );
-            }
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text(
+                'There is no post here, start uploading some!',
+                style: TextStyle(color: Colors.black),
+              ),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.active) {
+            final posts = snapshot.data!.docs
+                .map((doc) => Post.fromMap(doc.data()))
+                .toList();
+
+            return ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (ctx, index) {
+                return PostTile(
+                  post: posts[index],
+                );
+              },
+            );
           }
           return Shimmer.fromColors(
             baseColor: Colors.grey.shade400,

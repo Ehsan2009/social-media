@@ -7,6 +7,7 @@ class AppUser {
   final String profileUrl;
   final int followersCount;
   final int followingCount;
+  final List<String> followers;
   final List<Post> posts;
 
   AppUser({
@@ -16,6 +17,7 @@ class AppUser {
     required this.profileUrl,
     required this.followersCount,
     required this.followingCount,
+    required this.followers,
     required this.posts,
   });
 
@@ -45,6 +47,7 @@ class AppUser {
       profileUrl: map['profileUrl'] as String,
       followersCount: map['followersCount'] as int,
       followingCount: map['followingCount'] as int,
+      followers: List<String>.from((map['followers'] ?? []) as List),
       posts: fetchedPosts,
     );
   }

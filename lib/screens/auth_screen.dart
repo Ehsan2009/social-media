@@ -72,9 +72,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
       if (mounted) {
         context.go('/');
-        setState(() {
-          isAuthenticating = false;
-        });
       }
     } on FirebaseAuthException catch (error) {
       if (mounted) {
@@ -82,6 +79,10 @@ class _AuthScreenState extends State<AuthScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(error.message ?? 'Authentication failed.')),
         );
+
+        setState(() {
+          isAuthenticating = false;
+        });
       }
     }
   }
