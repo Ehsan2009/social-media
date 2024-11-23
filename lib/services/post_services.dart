@@ -19,7 +19,7 @@ class PostServices {
   }
 
   Future<void> like(String postId, String userId, List<String> likers) async {
-    final userDoc = firebaseFirestore.collection('users').doc(uid);
+    final userDoc = firebaseFirestore.collection('users').doc(userId);
 
     // Fetch the user's posts
     final snapshot = await userDoc.get();
@@ -42,7 +42,7 @@ class PostServices {
   }
 
   Future<void> unLike(String postId, String userId, List<String> likers) async {
-    final userDoc = firebaseFirestore.collection('users').doc(uid);
+    final userDoc = firebaseFirestore.collection('users').doc(userId);
 
     // Fetch the user's posts
     final snapshot = await userDoc.get();

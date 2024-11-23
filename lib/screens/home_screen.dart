@@ -128,24 +128,27 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey.shade400,
+                highlightColor: const Color.fromRGBO(255, 255, 255, 1),
+                child: ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (ctx, index) {
+                    return const ShimmerPostTile();
+                  },
+                ),
+              );
+            }
 
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text(
-                'There is no post here, start uploading some!',
-                style: TextStyle(color: Colors.black),
-              ),
-            );
-          }
+            if (!snapshot.hasData) {
+              return Center(
+                child: Text('There is not post here, try adding some!'),
+              );
+            }
 
-          if (snapshot.connectionState == ConnectionState.active) {
             final posts = snapshot.data!.docs
                 .map((doc) => Post.fromMap(doc.data()))
                 .toList();
@@ -158,19 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             );
-          }
-          return Shimmer.fromColors(
-            baseColor: Colors.grey.shade400,
-            highlightColor: const Color.fromRGBO(255, 255, 255, 1),
-            child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (ctx, index) {
-                return const ShimmerPostTile();
-              },
-            ),
-          );
-        },
-      ),
+          }),
     );
   }
 }
