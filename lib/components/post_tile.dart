@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:social_media/models/post.dart';
@@ -22,7 +23,8 @@ class PostTile extends StatefulWidget {
 
 class _PostTileState extends State<PostTile> {
   AppUser? fetchedUser;
-  var isLiked = false;
+  final currentUser = FirebaseAuth.instance.currentUser;
+  final postServices = PostServices();
 
   @override
   void initState() {
@@ -97,24 +99,24 @@ class _PostTileState extends State<PostTile> {
                   children: [
                     GestureDetector(
                       onTap: () async {
-                        if (!isLiked) {
+                        if (postServices.isLiked(
+                                postModel.userId, postModel.likers) ==
+                            false) {
                           await PostServices().like(
                             widget.post.postId,
                             widget.post.userId,
-                            postModel.likesCount,
+                            postModel.likers,
                           );
                         } else {
                           await PostServices().unLike(
                             widget.post.postId,
                             widget.post.userId,
-                            postModel.likesCount,
+                            postModel.likers,
                           );
                         }
-                        setState(() {
-                          isLiked = !isLiked;
-                        });
                       },
-                      child: isLiked
+                      child: postServices.isLiked(
+                              postModel.userId, postModel.likers)
                           ? const Icon(
                               Icons.favorite,
                               color: Colors.red,
@@ -126,7 +128,7 @@ class _PostTileState extends State<PostTile> {
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      '${postModel.likesCount}',
+                      '${postModel.likers.length}',
                       style: TextStyle(
                         color: Colors.grey[600],
                       ),

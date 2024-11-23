@@ -9,7 +9,7 @@ class Post {
   final String name;
   final String caption;
   final String imageUrl;
-  final int likesCount;
+  final List<String> likers;
   final List<String> comments;
 
   Post({
@@ -19,7 +19,7 @@ class Post {
     required this.name,
     required this.caption,
     required this.imageUrl,
-    required this.likesCount,
+    required this.likers,
     required this.comments,
   }) : postId = postId ?? uuid.v4();
 
@@ -31,7 +31,7 @@ class Post {
       name: map['name'] as String,
       caption: map['caption'] as String,
       imageUrl: map['imageUrl'] as String,
-      likesCount: map['likesCount'] as int,
+      likers: List<String>.from(map['likers'] as List),
       comments: List<String>.from(map['comments'] as List),
     );
   }
@@ -44,7 +44,7 @@ class Post {
       'name': name,
       'caption': caption,
       'imageUrl': imageUrl,
-      'likesCount': likesCount,
+      'likers': likers,
       'comments': comments,
     };
   }

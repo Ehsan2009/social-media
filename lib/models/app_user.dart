@@ -31,7 +31,7 @@ class AppUser {
               name: '',
               caption: '',
               imageUrl: '',
-              likesCount: 0,
+              likers: [],
               comments: [],
             );
           }

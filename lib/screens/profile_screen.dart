@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media/components/post_tile.dart';
@@ -14,6 +15,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -100,23 +103,24 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // follow button
-            Container(
-              width: 350,
-              height: 70,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadiusDirectional.circular(16),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'Follow',
-                style: TextStyle(
-                  color: Colors.white,
+            if (user.email != currentUser!.email)
+              Container(
+                width: 350,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadiusDirectional.circular(16),
+                ),
+                alignment: Alignment.center,
+                child: const Text(
+                  'Follow',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 20),
+            if (user.email != currentUser.email) const SizedBox(height: 20),
 
             // posts
             const Padding(

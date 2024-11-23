@@ -60,8 +60,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   final posts =
                       List<Map<String, dynamic>>.from(userDoc['posts']);
 
-                  final post = posts
-                      .firstWhere((post) => post['postId'] == widget.post.postId);
+                  final post = posts.firstWhere(
+                      (post) => post['postId'] == widget.post.postId);
 
                   final postModel = Post.fromMap(post);
 
@@ -120,7 +120,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   shape: const CircleBorder(),
                   elevation: 0,
                   backgroundColor: Colors.lightGreen,
-                  child: isLoading ? const CircularProgressIndicator() : const Icon(Icons.arrow_upward_rounded),
+                  child: isLoading
+                      ? const CircularProgressIndicator()
+                      : const Icon(Icons.arrow_upward_rounded),
                 ),
               ],
             ),
