@@ -149,7 +149,7 @@ class PostTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(post.caption),
+            child: Text(post.caption, style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
           ),
         ),
       ],

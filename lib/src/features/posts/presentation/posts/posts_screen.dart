@@ -47,7 +47,14 @@ class PostsScreen extends StatelessWidget {
               );
             },
             error: (error, _) {
-              return Center(child: Text(error.toString()));
+              return Center(
+                child: Text(
+                  error.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+              );
             },
             loading: () {
               return Shimmer.fromColors(

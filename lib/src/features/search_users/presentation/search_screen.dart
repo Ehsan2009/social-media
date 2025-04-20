@@ -73,10 +73,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       ),
       body:
           searchController.text.isEmpty
-              ? const Center(
+              ? Center(
                 child: Text(
                   'Start searching for users!',
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary),
                 ),
               )
               : ListView.builder(

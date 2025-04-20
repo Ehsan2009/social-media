@@ -10,6 +10,7 @@ part 'auth_controller.g.dart';
 
 @riverpod
 class AuthController extends _$AuthController {
+  @override
   FutureOr<void> build() {
     // nothing to do
   }

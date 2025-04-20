@@ -23,6 +23,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   var enteredName = '';
   var enteredEmail = '';
   var enteredPassword = '';
+  String? profileUrl;
   File? _selectedImage;
   var isLogin = false;
   var passwordController = TextEditingController();
@@ -42,16 +43,23 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
 
     formKey.currentState!.save();
 
-    final profileUrl = await ref
+      if (!isLogin) {
+    if (_selectedImage == null) {
+      showAlertDialog(context: context, content: 'Please pick a profile image.');
+      return;
+    }
+
+    profileUrl = await ref
         .read(authControllerProvider.notifier)
         .fetchImageUrl(_selectedImage!);
+  }
 
     ref
         .read(authControllerProvider.notifier)
         .authenticate(
           enteredName.trim(),
           enteredEmail.trim(),
-          profileUrl,
+          profileUrl ?? '',
           enteredPassword.trim(),
           isLogin
               ? EmailPasswordSignInFormType.signIn
@@ -75,7 +83,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
     });
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -230,8 +237,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                         },
                         child: Text(
                           isLogin ? 'Register now' : 'Login now',
-                          style: GoogleFonts.roboto(
-                            color: Colors.black,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
