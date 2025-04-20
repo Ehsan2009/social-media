@@ -49,7 +49,12 @@ class PostTile extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 16),
-              Text(post.name),
+              Text(
+                post.name,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
             ],
           ),
         ),
@@ -99,13 +104,13 @@ class PostTile extends StatelessWidget {
                                 ? const Icon(Icons.favorite, color: Colors.red)
                                 : Icon(
                                   Icons.favorite_border,
-                                  color: Colors.grey[600],
+                                  color: Theme.of(context).colorScheme.secondary,
                                 ),
                       ),
                       const SizedBox(width: 5),
                       Text(
                         '${post.likers.length}',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                       const SizedBox(width: 10),
                       GestureDetector(
@@ -119,17 +124,17 @@ class PostTile extends StatelessWidget {
                             },
                           );
                         },
-                        child: Icon(Icons.comment, color: Colors.grey[600]),
+                        child: Icon(Icons.comment, color: Theme.of(context).colorScheme.secondary),
                       ),
                       const SizedBox(width: 5),
                       Text(
                         '${post.comments.length}',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                       const Spacer(),
                       Text(
                         '34 minutes ago',
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                     ],
                   ),

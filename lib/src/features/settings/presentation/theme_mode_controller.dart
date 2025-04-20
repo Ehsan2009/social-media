@@ -6,6 +6,7 @@ part 'theme_mode_controller.g.dart';
 
 @riverpod
 class ThemeModeController extends _$ThemeModeController {
+  @override
   Future<ThemeMode> build() async {
     final settingsRepository = await ref.read(
       settingsRepositoryProvider.future,

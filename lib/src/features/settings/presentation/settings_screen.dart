@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media/src/common_widgets/app_drawer.dart';
 import 'package:social_media/src/features/settings/presentation/theme_mode_controller.dart';
 
@@ -18,7 +17,10 @@ class SettingsScreen extends ConsumerWidget {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           'S E T T I N G S',
-          style: GoogleFonts.roboto(fontSize: 18, color: Colors.grey[700]),
+          style: TextStyle(
+            fontSize: 18,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ),
         centerTitle: true,
       ),
@@ -32,7 +34,10 @@ class SettingsScreen extends ConsumerWidget {
             children: [
               Text(
                 'Dark Mode',
-                style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
               const Spacer(),
               themeModeAsync.when(

@@ -12,7 +12,7 @@ class SettingsRepository {
   static const darkModeKey = 'darkMode';
 
   Future<void> switchThemeMode(bool isDarkMode) async {
-    await sharedPreferences.setBool(darkModeKey, !isDarkMode);
+    await sharedPreferences.setBool(darkModeKey, isDarkMode);
   }
 
   bool isDarkMode() => sharedPreferences.getBool(darkModeKey) ?? false;

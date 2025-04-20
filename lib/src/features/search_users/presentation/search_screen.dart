@@ -62,7 +62,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: TextField(
           controller: searchController,
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           decoration: InputDecoration(
             hintText: 'Search users...',
             helperStyle: TextStyle(color: Colors.grey[600]),

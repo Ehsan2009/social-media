@@ -36,7 +36,15 @@ class AppDrawer extends ConsumerWidget {
                     .toggleSelectedScreen(DrawerScreens.posts);
                 context.goNamed(AppRoute.posts.name);
               },
-              title: const Text('P O S T S'),
+              title: Text(
+                'P O S T S',
+                style: TextStyle(
+                  color:
+                      selectedScreen == DrawerScreens.posts
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                ),
+              ),
               leading: Icon(
                 Icons.home,
                 color:
@@ -54,7 +62,15 @@ class AppDrawer extends ConsumerWidget {
                     .toggleSelectedScreen(DrawerScreens.account);
                 context.goNamed(AppRoute.account.name);
               },
-              title: const Text('A C C O U N T'),
+              title: Text(
+                'A C C O U N T',
+                style: TextStyle(
+                  color:
+                      selectedScreen == DrawerScreens.account
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                ),
+              ),
               leading: Icon(
                 Icons.person,
                 color:
@@ -72,7 +88,15 @@ class AppDrawer extends ConsumerWidget {
                     .toggleSelectedScreen(DrawerScreens.search);
                 context.goNamed(AppRoute.search.name);
               },
-              title: const Text('S E A R C H'),
+              title: Text(
+                'S E A R C H',
+                style: TextStyle(
+                  color:
+                      selectedScreen == DrawerScreens.search
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                ),
+              ),
               leading: Icon(
                 Icons.search,
                 color:
@@ -90,7 +114,15 @@ class AppDrawer extends ConsumerWidget {
                     .toggleSelectedScreen(DrawerScreens.settings);
                 context.goNamed(AppRoute.settings.name);
               },
-              title: const Text('S E T T I N G S'),
+              title: Text(
+                'S E T T I N G S',
+                style: TextStyle(
+                  color:
+                      selectedScreen == DrawerScreens.settings
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                ),
+              ),
               leading: Icon(
                 Icons.settings,
                 color:

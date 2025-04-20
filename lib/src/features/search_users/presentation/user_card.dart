@@ -23,14 +23,14 @@ class UserCard extends StatelessWidget {
           children: [
             Icon(
               Icons.person,
-              color: Colors.grey[500],
+              color: Theme.of(context).colorScheme.secondary,
             ),
             const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.name),
-                Text(user.email),
+                Text(user.name, style: TextStyle(color: Theme.of(context).colorScheme.secondary,),),
+                Text(user.email, style: TextStyle(color: Theme.of(context).colorScheme.secondary,),),
               ],
             ),
             const Spacer(),
@@ -41,7 +41,7 @@ class UserCard extends StatelessWidget {
                   extra: user.id,
                 );
               },
-              icon: const Icon(Icons.arrow_forward),
+              icon: Icon(Icons.arrow_forward, color: Theme.of(context).colorScheme.secondary,),
             ),
           ],
         ),

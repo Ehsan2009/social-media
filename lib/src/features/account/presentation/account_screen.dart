@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media/src/common_widgets/app_drawer.dart';
 import 'package:social_media/src/features/account/data/account_repository.dart';
 import 'package:social_media/src/features/posts/presentation/posts/post_tile.dart';
@@ -26,9 +25,9 @@ class AccountScreen extends ConsumerWidget {
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             title: Text(
               account.name,
-              style: GoogleFonts.roboto(
+              style: TextStyle(
                 fontSize: 18,
-                color: Colors.grey.shade600,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
             centerTitle: true,
@@ -36,7 +35,12 @@ class AccountScreen extends ConsumerWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Text(account.email),
+                Text(
+                  account.email,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
 
                 const SizedBox(height: 30),
 
@@ -47,11 +51,11 @@ class AccountScreen extends ConsumerWidget {
                   decoration: const BoxDecoration(shape: BoxShape.circle),
                   clipBehavior: Clip.hardEdge,
                   child: CachedNetworkImage(
-                        imageUrl: account.profileUrl,
-                        height: 400,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                    imageUrl: account.profileUrl,
+                    height: 400,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
 
                 const SizedBox(height: 20),
@@ -65,12 +69,17 @@ class AccountScreen extends ConsumerWidget {
                         Text(
                           '${account.posts.length}',
                           style: TextStyle(
-                            color: Colors.grey.shade500,
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
                         ),
-                        const Text('Posts'),
+                        Text(
+                          'Posts',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(width: 30),
@@ -79,12 +88,17 @@ class AccountScreen extends ConsumerWidget {
                         Text(
                           '${account.followersCount}',
                           style: TextStyle(
-                            color: Colors.grey.shade500,
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
                         ),
-                        const Text('Followers'),
+                        Text(
+                          'Followers',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(width: 30),
@@ -93,12 +107,17 @@ class AccountScreen extends ConsumerWidget {
                         Text(
                           '${account.followingCount}',
                           style: TextStyle(
-                            color: Colors.grey.shade500,
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
                         ),
-                        const Text('Following'),
+                        Text(
+                          'Following',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -107,11 +126,16 @@ class AccountScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // posts
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Posts'),
+                    child: Text(
+                      'Posts',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
                   ),
                 ),
 
@@ -120,16 +144,21 @@ class AccountScreen extends ConsumerWidget {
                     return PostTile(post: post);
                   })
                 else
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 100),
-                    child: Text('This account has no post.'),
+                    child: Text(
+                      'This account has no post.',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
                   ),
               ],
             ),
           ),
         );
       },
-      error: (error, _) => Text(error.toString()),
+      error: (error, _) => Center(child: Text(error.toString())),
       loading: () => Center(child: CircularProgressIndicator()),
     );
   }

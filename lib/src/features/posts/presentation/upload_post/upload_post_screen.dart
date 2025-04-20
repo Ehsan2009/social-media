@@ -48,26 +48,29 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         title: Text(
           'U P L O A D',
-          style: GoogleFonts.roboto(fontSize: 18, color: Colors.grey[700]),
+          style: GoogleFonts.roboto(
+            fontSize: 18,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
         ),
         centerTitle: true,
         actions: [
           Align(
             alignment: Alignment.centerRight,
             child: IconButton(
-              onPressed:
-                  uploadPostState.isLoading
-                      ? null
-                      : () {
-                        ref
-                            .read(uploadPostControllerProvider.notifier)
-                            .uploadPost(
-                              _pickedImageFile!,
-                              captionController.text,
-                            );
+              onPressed: () {
+                if (uploadPostState.isLoading ||
+                    captionController.text.isEmpty ||
+                    _pickedImageFile == null) {
+                  return;
+                }
+                ref
+                    .read(uploadPostControllerProvider.notifier)
+                    .uploadPost(_pickedImageFile!, captionController.text);
 
-                        captionController.clear();
-                      },
+                captionController.clear();
+              },
+
               icon:
                   uploadPostState.isLoading
                       ? const CircularProgressIndicator(
