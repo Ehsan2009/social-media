@@ -8,14 +8,13 @@ import 'package:social_media/src/features/posts/presentation/posts/posts_screen.
 import 'package:social_media/src/features/account/presentation/account_screen.dart';
 import 'package:social_media/src/features/search_users/presentation/search_screen.dart';
 import 'package:social_media/src/features/settings/presentation/settings_screen.dart';
+import 'package:social_media/src/routing/go_router_refresh_stream.dart';
 import 'package:social_media/src/routing/not_found_screen.dart';
-import 'package:social_media/src/routing/splash.dart';
 import 'package:social_media/src/features/posts/presentation/upload_post/upload_post_screen.dart';
 
 part 'app_router.g.dart';
 
 enum AppRoute {
-  splash,
   auth,
   posts,
   uploadPost,
@@ -29,7 +28,7 @@ enum AppRoute {
 GoRouter goRouter(Ref ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/auth',
     redirect: (context, state) {
       final isLoggedIn = authRepository.firebaseUser != null;
       final path = state.uri.path;
@@ -44,12 +43,10 @@ GoRouter goRouter(Ref ref) {
       }
       return null;
     },
+        refreshListenable: GoRouterRefreshStream(
+      authRepository.authStateChanges(),
+    ),
     routes: [
-      GoRoute(
-        path: '/',
-        name: AppRoute.splash.name,
-        builder: (context, state) => const SplashScreen(),
-      ),
       GoRoute(
         path: '/auth',
         name: AppRoute.auth.name,

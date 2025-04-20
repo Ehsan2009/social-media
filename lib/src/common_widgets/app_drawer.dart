@@ -105,7 +105,6 @@ class AppDrawer extends ConsumerWidget {
             ListTile(
               onTap: () {
                 authController.signOut();
-                context.goNamed(AppRoute.splash.name);
               },
               title: const Text('L O G O U T'),
               leading: Icon(Icons.logout, color: Colors.grey[600]),

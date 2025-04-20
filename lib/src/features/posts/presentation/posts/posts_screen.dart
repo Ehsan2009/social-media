@@ -46,8 +46,8 @@ class PostsScreen extends StatelessWidget {
                 ),
               );
             },
-            error: (_, _) {
-              return Text('No Posts found!');
+            error: (error, _) {
+              return Center(child: Text(error.toString()));
             },
             loading: () {
               return Shimmer.fromColors(

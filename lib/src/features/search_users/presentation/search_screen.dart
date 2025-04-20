@@ -23,7 +23,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final allUsers = await ref.read(allUsersProvider.future);
     setState(() {
       users = allUsers.where((user) => user.id != currentUser.id).toList();
-      filteredUsers = allUsers.where((user) => user.id != currentUser.id).toList(); // Initially show all users
+      filteredUsers = allUsers.where((user) => user.id != currentUser.id).toList();
     });
   }
 

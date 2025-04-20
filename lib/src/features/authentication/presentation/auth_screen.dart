@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media/src/common_widgets/alert_dialog.dart';
@@ -9,7 +8,6 @@ import 'package:social_media/src/common_widgets/custom_text_field.dart';
 import 'package:social_media/src/common_widgets/user_image_picker.dart';
 import 'package:social_media/src/features/authentication/presentation/auth_controller.dart';
 import 'package:social_media/src/features/authentication/presentation/widgets/submit_button.dart';
-import 'package:social_media/src/routing/app_router.dart';
 
 enum EmailPasswordSignInFormType { signIn, register }
 
@@ -59,10 +57,6 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               ? EmailPasswordSignInFormType.signIn
               : EmailPasswordSignInFormType.register,
         );
-
-    if (mounted) {
-      context.goNamed(AppRoute.splash.name);
-    }
   }
 
   @override
