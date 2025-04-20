@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "29742879658",
+    "project_id": "social-media-f22be",
+    "storage_bucket": "social-media-f22be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29742879658:android:745f2768c5167b0ac811d3",
+        "android_client_info": {
+          "package_name": "com.example.social_media"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbZ7XO2CMKji8KF5nsDZ_5gL-E6b066oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29742879658:android:b899ebf20a28cf0dc811d3",
+        "android_client_info": {
+          "package_name": "com.social.media"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbZ7XO2CMKji8KF5nsDZ_5gL-E6b066oE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

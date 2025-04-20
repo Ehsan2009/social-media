@@ -1,0 +1,15 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  plugins:
+    - custom_lint # Ensure the custom_lint plugin is enabled
+
+linter:
+  rules:
+    - riverpod_annotation: true
+    - riverpod_lint: true
+
+# You can disable specific rules if needed
+# linter:
+#   rules:
+#     always_declare_return_types: false
