@@ -4,6 +4,7 @@ import 'package:social_media/src/common_widgets/app_drawer.dart';
 import 'package:social_media/src/features/search_users/presentation/user_card.dart';
 import 'package:social_media/src/features/authentication/domain/app_user.dart';
 import 'package:social_media/src/features/search_users/presentation/search_controller.dart';
+import 'package:social_media/src/shared/current_user_provider.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -18,10 +19,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
 
   void fetchAllUsers() async {
+    final currentUser = await ref.read(appUserProvider.future);
     final allUsers = await ref.read(allUsersProvider.future);
     setState(() {
-      users = allUsers;
-      filteredUsers = allUsers; // Initially show all users
+      users = allUsers.where((user) => user.id != currentUser.id).toList();
+      filteredUsers = allUsers.where((user) => user.id != currentUser.id).toList(); // Initially show all users
     });
   }
 

@@ -45,13 +45,6 @@ class PostsScreen extends StatelessWidget {
                   children: [for (var post in posts) PostTile(post: post)],
                 ),
               );
-
-              // ListView.builder(
-              //   itemCount: posts.length,
-              //   itemBuilder: (ctx, index) {
-              //     return PostTile(post: posts[index]);
-              //   },
-              // );
             },
             error: (_, _) {
               return Text('No Posts found!');

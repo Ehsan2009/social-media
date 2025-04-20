@@ -7,6 +7,7 @@ part 'upload_post_controller.g.dart';
 
 @riverpod  
 class UploadPostController extends _$UploadPostController {
+  @override
   FutureOr<void> build() {
     // nothing to do
   }
