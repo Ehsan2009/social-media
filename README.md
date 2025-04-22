@@ -6,7 +6,7 @@ A full-featured social media application built using Flutter, Firebase, Supabase
 <img src="https://github.com/Ehsan2009/social-media/blob/master/social_media_one.jpg" width="200"/>
 
 <h2>Profile</h2>
-<img src="https://github.com/Ehsan2009/social-media/blob/master/social_media_two.jpg" width="200"/>
+<img src="https://github.com/Ehsan2009/social-media/blob/master/social_meida_two.jpg" width="200"/>
 
 <h2>Home</h2>
 <img src="https://github.com/Ehsan2009/social-media/blob/master/social_media_three.jpg" width="200"/>
