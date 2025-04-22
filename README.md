@@ -2,8 +2,8 @@
 
 A full-featured social media application built using Flutter, Firebase, Supabase, and Riverpod. Users can share posts, interact in real-time, and discover others through a clean and intuitive interface.
 
-# 🧑‍💼 Authentication
-![Auth Preview](https://github.com/Ehsan2009/social-media-app/blob/master/first_screenshot.PNG)
+# Upload feature
+![upload Preview](https://github.com/Ehsan2009/social-media-app/blob/master/social_media_one.jpg)
 
 # 📝 Post Feed
 ![Feed Preview](https://github.com/Ehsan2009/social-media-app/blob/master/second_screenshot.PNG)
